@@ -1,6 +1,8 @@
 # smart_charger
 Smart charger using a ESP32 Dev board, microPython and a DROK 200220 DC buck converter.
 
+The micropython module for the DC buck converter control is in https://github.com/fabrizziop/micropython_drok200220_module
+
 This program charges a battery with two stages:
 
 1. Voltage setpoint set higher than normal float, also called absorption voltage. This handles the bulk and absorption charge stages, as the DC buck converter has a current limit, so during bulk, it is charged at the set current and voltage rises gradually as the battery is charged. When the voltage limit is reached, charging continues under constant voltage and the current diminishes slowly.
