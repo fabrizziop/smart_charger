@@ -1,6 +1,12 @@
 # smart_charger
 Smart charger using a ESP32 Dev board, microPython and a DROK 200220 DC buck converter.
 
+**WARNING**
+
+**CHANGE THE VOLTAGES AND CURRENTS TO MATCH YOUR SETUP**
+
+**BE CAREFUL WHEN CHARGING BATTERIES, SPECIALLY IN ENCLOSED SPACES**
+
 The micropython module for the DC buck converter control is in https://github.com/fabrizziop/micropython_drok200220_module
 
 This program charges a LEAD ACID (AGM) battery with two stages:
@@ -21,3 +27,6 @@ Both effects create the required hysteresis to avoid unnecessary switching.
 Now, with the electrical details. A schottky diode was added between the DC output and the battery, to avoid backfeeding it. A relay module (normally open) was added also in this path, for safety purposes. The ESP32 and relays are powered with a DC Buck converter, connected to the battery, so in case of a power outage, the microcontroller will stay on (a switch should be added between battery and dc buck). Three LEDs are also connected, indicating Absorption/Float/Emergency.
 
 Voltages are in centivolts (1V -> 100cV), currents in centiamps (1A -> 100cA), as this is the way they are handled by the DC module.
+**WARNING**
+
+**CHANGE THE VOLTAGES AND CURRENTS TO MATCH YOUR SETUP**
