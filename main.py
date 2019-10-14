@@ -15,19 +15,21 @@ led_2 = Pin(22, Pin.OUT, value=1)
 led_3 = Pin(23, Pin.OUT, value=1)
 
 class battery_handler(object):
-	def __init__(self, dc_buck_object, relay_pin_object, abs_led, float_led, em_led, buzzer_pin_object, absorption_voltage_ref, float_voltage_ref, desired_current, transition_current_hi, transition_current_lo, init_time, emergency_time):
+	def __init__(self, dc_buck_object, relay_pin_object, abs_led, float_led, em_led, buzzer_pin_object, voltage_never_exceed, absorption_voltage_ref, float_voltage_ref, desired_current, transition_current_hi, transition_current_lo, init_time, emergency_time):
 		self.dc_buck_object = dc_buck_object
 		self.relay_pin_object = relay_pin_object
 		self.buzzer_pin_object = buzzer_pin_object
 		self.abs_led = abs_led
 		self.float_led = float_led
 		self.em_led = em_led
+		self.voltage_never_exceed = voltage_never_exceed
 		self.absorption_voltage_ref = absorption_voltage_ref
 		self.float_voltage_ref = float_voltage_ref
 		self.desired_current = desired_current
 		self.transition_current_hi = transition_current_hi
 		self.transition_current_lo = transition_current_lo
 		self.absorption_mode = True
+		self.vne_triggered = False
 		self.emergency_time = emergency_time
 		self.init_time = init_time
 		self.init = False
@@ -80,6 +82,13 @@ class battery_handler(object):
 			self.set_absorption_mode()
 		else:
 			self.set_float_mode()
+	def check_vne(self):
+		if self.dc_buck_object.read_actual_output_voltage() >= self.voltage_never_exceed:
+			self.vne_triggered = True
+			self.set_emergency_mode()
+			while True:
+				print("VNE EXCEEDED")
+				time.sleep(self.emergency_time)
 	def check_absorption_current(self):
 		current = self.dc_buck_object.read_actual_output_current()
 		print("CURRENT:",current,"ABS:",self.absorption_mode)
@@ -94,11 +103,12 @@ class battery_handler(object):
 			else:
 				return False
 	def run_loop(self):
-		while True:
+		while self.vne_triggered == False:
 			try:
 				if self.init == False:
 					self.set_init_mode()
 				else:
+					self.check_vne()
 					self.set_mode(self.check_absorption_current())
 			except:
 				self.set_emergency_mode()
@@ -106,7 +116,7 @@ class battery_handler(object):
 				
 
 drok_obj = UART_DROK_200220(UART_NUMBER, PIN_UART_TX, PIN_UART_RX, RW_DELAY, RETRY_COUNT)
-bat_obj = battery_handler(drok_obj, pin_relay, led_2, led_1, led_3, False, 2800, 2600, 0500, 0400, 0200, 5, 10)
+bat_obj = battery_handler(drok_obj, pin_relay, led_2, led_1, led_3, False, 2850, 2815, 2670, 0500, 0400, 0200, 5, 10)
 bat_obj.run_loop()
 
 
