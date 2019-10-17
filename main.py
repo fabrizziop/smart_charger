@@ -77,7 +77,8 @@ class battery_handler(object):
 			else:
 				time_difference_ms = ticks_diff(ticks_ms(), self.last_measurement_data[1])
 				print("TD:", time_difference_ms)
-				average_current = (self.last_measurement_data[2] + current) // 2
+				#subtracting the 60mA waste
+				average_current = max((((self.last_measurement_data[2] + current) // 2)-6),0)
 				print("C1", self.last_measurement_data[2])
 				print("C2", current)
 				print("avg", average_current)
