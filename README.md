@@ -32,3 +32,5 @@ Missing features: Logging/Notifications.
 **WARNING**
 
 **CHANGE THE VOLTAGES AND CURRENTS TO MATCH YOUR SETUP**
+
+2019-10-17: Added POST API, for integration with my other project. Place `SECRET_CHARGER_ID` and `JSON_API_URL` inside `charger_comm_config.py`
