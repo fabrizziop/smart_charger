@@ -49,6 +49,17 @@ class battery_handler(object):
 		self.triggered_emergency = False
 		self.last_measurement_data = (False, False, False)
 		self.generate_charge_session()
+	def show_transmission_status(self, status):
+		if status:
+			orig_val = self.abs_led.value()
+			self.abs_led.value(not orig_val)
+			time.sleep(0.25)
+			self.abs_led.value(orig_val)
+		else:
+			orig_val = self.em_led.value()
+			self.em_led.value(not orig_val)
+			time.sleep(0.25)
+			self.em_led.value(orig_val)
 	def generate_charge_session(self):
 		if self.json_enabled:
 			self.current_session = hexlify(urandom(31)).decode('utf-8')
@@ -77,8 +88,9 @@ class battery_handler(object):
 			milliamps_second = 0
 		try:
 			send_json_data(self.json_post_url, self.charger_id, self.current_session, current, voltage, emergency, milliamps_second)
+			self.show_transmission_status(True)
 		except:
-			pass
+			self.show_transmission_status(False)
 	def report_status(self):
 		self.try_send_json_data_if_enabled(self.dc_buck_object.read_actual_output_voltage(), self.dc_buck_object.read_actual_output_current())
 	def set_emergency_mode(self, emergency_type=1):
