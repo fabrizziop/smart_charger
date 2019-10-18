@@ -126,6 +126,7 @@ class battery_handler(object):
 		time.sleep(self.init_time)
 		print("Init OK")
 		self.triggered_emergency = False
+		self.generate_charge_session()
 		self.last_measurement_data = (True, ticks_ms(), self.dc_buck_object.read_actual_output_current())
 	def set_absorption_mode(self):
 		self.dc_buck_object.write_output_voltage(self.absorption_voltage_ref)
