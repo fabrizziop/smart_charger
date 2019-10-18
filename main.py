@@ -175,13 +175,16 @@ class battery_handler(object):
 					self.check_vne()
 					self.report_status()
 					self.set_mode(self.check_absorption_current())
-					print("memory", gc.mem_free())
-					print("collecting")
-					gc.collect()
-					print("memory", gc.mem_free())
 			except:
 				self.set_emergency_mode()
 				time.sleep(self.emergency_time)
+			try:
+				print("memory", gc.mem_free())
+				print("collecting")
+				gc.collect()
+				print("memory", gc.mem_free())
+			except:
+				pass
 				
 
 drok_obj = UART_DROK_200220(UART_NUMBER, PIN_UART_TX, PIN_UART_RX, RW_DELAY, RETRY_COUNT)
